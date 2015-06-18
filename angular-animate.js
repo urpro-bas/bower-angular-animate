@@ -1984,7 +1984,7 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
       var entries = callbackRegistry[event];
       if (entries) {
         forEach(entries, function(entry) {
-          if (entry.node.contains(targetNode)) {
+          if (entry.node === "*" || entry.node.contains(targetNode)) {
             matches.push(entry.callback);
           }
         });
@@ -2004,6 +2004,8 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
     return {
       on: function(event, container, callback) {
         var node = extractElementNode(container);
+        if(container === "*")
+            node = container;
         callbackRegistry[event] = callbackRegistry[event] || [];
         callbackRegistry[event].push({
           node: node,
@@ -2021,6 +2023,8 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
 
         function filterFromRegistry(list, matchContainer, matchCallback) {
           var containerNode = extractElementNode(matchContainer);
+          if(matchContainer === "*")
+              containerNode = matchContainer;
           return list.filter(function(entry) {
             var isMatch = entry.node === containerNode &&
                             (!matchCallback || entry.callback === matchCallback);
